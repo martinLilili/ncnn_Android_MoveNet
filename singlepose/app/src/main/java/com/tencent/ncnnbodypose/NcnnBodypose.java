@@ -23,6 +23,7 @@ public class NcnnBodypose
     public native boolean openCamera(int facing);
     public native boolean closeCamera();
     public native boolean setOutputWindow(Surface surface);
+    public native boolean setYUV(byte[] nv21, int width, int height);
 
     static {
         System.loadLibrary("ncnnbodypose");

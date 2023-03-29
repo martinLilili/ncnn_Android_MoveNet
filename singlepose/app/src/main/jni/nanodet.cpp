@@ -237,6 +237,7 @@ void NanoDet::detect_pose(cv::Mat &rgb, std::vector<keypoint> &points)
         kpt.y = (y - (hpad / 2)) / scale;
         kpt.score = heatmap_data[kpts_ys[i] * feature_size * num_joints + kpts_xs[i] * num_joints + i];
         points.push_back(kpt);
+//        __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "points score + %f", kpt.score);
 
     }
 

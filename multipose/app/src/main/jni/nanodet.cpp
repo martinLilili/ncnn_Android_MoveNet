@@ -28,6 +28,10 @@ inline static size_t argmax(ForwardIterator first, ForwardIterator last) {
 
 static void reduction_max(const ncnn::Mat& bottom,  ncnn::Mat& top)
 {
+
+//    ncnn::Mat bottom1(2, 3, 4, 5);
+//    bottom1.fill(4.f);
+
     ncnn::Option opt;
     opt.num_threads = 2;
     opt.use_fp16_storage = false;
@@ -51,7 +55,7 @@ static void reduction_max(const ncnn::Mat& bottom,  ncnn::Mat& top)
 
     // forward
     op->forward(bottom, top, opt);
-
+//    __android_log_print(ANDROID_LOG_DEBUG, "bottom", "top %f", top[0]);
     op->destroy_pipeline(opt);
 
     delete op;
@@ -446,14 +450,15 @@ void NanoDet::decodeRegressWithOffset(const ncnn::Mat& kpt_offset, const ncnn::M
     ncnn::Mat reduce_max_scores;
     reduction_max(scores_transpose1, reduce_max_scores);
     const float* reduce_max_scores_data = (float*)reduce_max_scores.data;
-
-
+//    __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "reduce_max_scores %p", (float*)scores_transpose1.data);
     for (int i = 0; i < heatmap_gather.size(); i++)
     {
         int idx1 = std::get<0>(heatmap_gather[i]);
         int idx2 = std::get<1>(heatmap_gather[i]);
         int idx3 = std::get<2>(heatmap_gather[i]);
+//        todo ncnn2021版本这里报错，
         float score = reduce_max_scores_data[idx1 * feat_w * num_joints + idx2 * num_joints + idx3];
+//        float score = 6;
         kpt_regress_scores.push_back(score);
     }
 

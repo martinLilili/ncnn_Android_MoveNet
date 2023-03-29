@@ -165,7 +165,7 @@ void onCaptureCompleted(void* context, ACameraCaptureSession* session, ACaptureR
 NdkCamera::NdkCamera()
 {
     camera_facing = 0;
-    camera_orientation = 0;
+    camera_orientation = 270;
 
     camera_manager = 0;
     camera_device = 0;
@@ -474,6 +474,7 @@ void NdkCameraWindow::on_image_render(cv::Mat& rgb) const
 void NdkCameraWindow::on_image(const unsigned char* nv21, int nv21_width, int nv21_height) const
 {
     // resolve orientation from camera_orientation and accelerometer_sensor
+//    camera_orientation = 270;
     {
         if (!sensor_event_queue)
         {
@@ -703,6 +704,18 @@ void NdkCameraWindow::on_image(const unsigned char* nv21, int nv21_width, int nv
         }
     }
 
+    __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "ccelerometer_orientation + %d", accelerometer_orientation);
+    __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "camera_orientation + %d", camera_orientation);
+    __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "camera_facing + %d", camera_facing);
+
+    __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "nv21_width + %d", nv21_width);
+    __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "nv21_height + %d", nv21_height);
+
+    __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "nv21_roi_y + %d", nv21_roi_y);
+    __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "nv21_roi_x + %d", nv21_roi_x);
+
+    __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "nv21_roi_w + %d", nv21_roi_w);
+    __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "nv21_roi_h + %d", nv21_roi_h);
     // crop and rotate nv21
     cv::Mat nv21_croprotated(roi_h + roi_h / 2, roi_w, CV_8UC1);
     {
@@ -715,6 +728,10 @@ void NdkCameraWindow::on_image(const unsigned char* nv21, int nv21_width, int nv
         ncnn::kanna_rotate_c2(srcUV, nv21_roi_w / 2, nv21_roi_h / 2, nv21_width, dstUV, roi_w / 2, roi_h / 2, roi_w, rotate_type);
     }
 
+    __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "roi_h + %d", roi_h);
+    __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "roi_w + %d", roi_w);
+
+    __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "rotate_type + %d", rotate_type);
     // nv21_croprotated to rgb
     cv::Mat rgb(roi_h, roi_w, CV_8UC3);
     ncnn::yuv420sp2rgb(nv21_croprotated.data, roi_w, roi_h, rgb.data);

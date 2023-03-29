@@ -7,7 +7,7 @@
     <uses-feature android:name="android.hardware.camera2.full" />
 
     <application android:label="@string/app_name">
-        <activity android:name="MainActivity"
+        <activity android:name=".MyCameraActivity"
                   android:label="@string/app_name"
                   android:screenOrientation="portrait">
             <intent-filter>

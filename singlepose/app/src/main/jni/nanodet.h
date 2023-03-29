@@ -38,9 +38,10 @@ public:
 
     int draw(cv::Mat& rgb);
 
+    void detect_pose(cv::Mat &rgb, std::vector<keypoint> &points);
+
 private:
 
-    void detect_pose(cv::Mat &rgb, std::vector<keypoint> &points);
     ncnn::Net poseNet;
     int feature_size;
     float kpt_scale;

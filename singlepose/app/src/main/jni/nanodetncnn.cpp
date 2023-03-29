@@ -182,7 +182,7 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnbodypose_NcnnBodypose_loadModel(
 
     const char* modeltypes[] =
     {
-        "lightning",
+        "movenet1",
         "thunder",
     };
 
@@ -264,4 +264,71 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnbodypose_NcnnBodypose_setOutputW
     return JNI_TRUE;
 }
 
+}
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_tencent_ncnnbodypose_NcnnBodypose_setYUV(JNIEnv *env, jobject thiz, jbyteArray jbyteArrayData, int width, int height) {
+
+    // 先获取数组指针和数组长度
+    jbyte* jData = env->GetByteArrayElements(jbyteArrayData, NULL);
+    jsize jDataLen = env->GetArrayLength(jbyteArrayData);
+
+    // 分配内存并拷贝数据
+    unsigned char* nv21 = new unsigned char[jDataLen];
+    memcpy(nv21, reinterpret_cast<unsigned char*>(jData), jDataLen);
+
+    // 释放资源
+    env->ReleaseByteArrayElements(jbyteArrayData, jData, JNI_ABORT);
+//
+////    // 使用 data 指向的内存
+//    int w = height;
+//    int h = width;
+//    int rotate_type = 7;
+//
+//    cv::Mat nv21_rotated(h + h / 2, w, CV_8UC1);
+//    ncnn::kanna_rotate_yuv420sp(nv21, width, height, nv21_rotated.data, w, h, rotate_type);
+//
+//    // nv21_rotated to rgb
+//    cv::Mat rgb(h, w, CV_8UC3);
+//    ncnn::yuv420sp2rgb(nv21_rotated.data, w, h, rgb.data);
+
+
+//    int nv21_roi_x = 0;
+//    int nv21_roi_y = 0;
+//    int nv21_roi_w = 0;
+//    int nv21_roi_h = 0;
+//    int roi_x = 0;
+//    int roi_y = 0;
+//    int roi_w = 640;
+//    int roi_h = 480;
+//    int rotate_type = 7;
+//    cv::Mat nv21_croprotated(roi_h + roi_h / 2, roi_w, CV_8UC1);
+//    {
+//        const unsigned char* srcY = nv21 + nv21_roi_y * nv21_width + nv21_roi_x;
+//        unsigned char* dstY = nv21_croprotated.data;
+//        ncnn::kanna_rotate_c1(srcY, nv21_roi_w, nv21_roi_h, nv21_width, dstY, roi_w, roi_h, roi_w, rotate_type);
+//
+//        const unsigned char* srcUV = nv21 + nv21_width * nv21_height + nv21_roi_y * nv21_width / 2 + nv21_roi_x;
+//        unsigned char* dstUV = nv21_croprotated.data + roi_w * roi_h;
+//        ncnn::kanna_rotate_c2(srcUV, nv21_roi_w / 2, nv21_roi_h / 2, nv21_width, dstUV, roi_w / 2, roi_h / 2, roi_w, rotate_type);
+//    }
+//
+//    // nv21_croprotated to rgb
+//    cv::Mat rgb(roi_h, roi_w, CV_8UC3);
+//    ncnn::yuv420sp2rgb(nv21_croprotated.data, roi_w, roi_h, rgb.data);
+
+    if (g_nanodet)
+    {
+//        std::vector<keypoint> points;
+//        g_nanodet->draw(rgb);
+
+       g_camera->on_image(nv21, width, height);
+
+    }
+
+    // 在不需要 data 的时候要记得释放内存
+    delete[] nv21;
+
+    return JNI_TRUE;
 }

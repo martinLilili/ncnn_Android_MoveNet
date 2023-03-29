@@ -41,7 +41,7 @@ public:
 
 public:
     int camera_facing;
-    int camera_orientation;
+    int camera_orientation = 270;
 
 private:
     ACameraManager* camera_manager;
